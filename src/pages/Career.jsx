@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 // import webimage from "../assets/careerCardTestImage.png";
 // import mlimage from "../assets/careerCardTestImage.png";
-// import dsaimage from "../assets/careerCardTestImage.png";
+// import dsaimage from "../assets/careerCardTestImage.png"
 // import dsaml from "../assets/careerCardTestImage.png";
 // import dsaweb from "../assets/careerCardTestImage.png";
 // import special from "../assets/careerCardTestImage.png";
