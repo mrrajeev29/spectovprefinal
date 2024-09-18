@@ -21,9 +21,22 @@ import Founder from "./components/Founder.jsx";
 import CoursePage from "./pages/CoursePage.jsx";
 // import AdminLogin from "./components/AdminLogin.jsx";
 import Donations from "./components/Donations.jsx";
-
+import MainPage from "./components/MainPage.jsx";
+import { useEffect, useState } from "react";
+import { auth, db } from "./components/Firebase.js";
+import { doc, getDoc } from "firebase/firestore";
 
 function App() {
+	const [userDetails, setUserDetails] = useState(null);
+	const fetchUserData = async () => {
+		auth.onAuthStateChanged(async (user) => {
+		  console.log(user);
+		  setUserDetails(user)
+		});
+	  };
+	  useEffect(() => {
+		fetchUserData();
+	  }, []);
 	const user = localStorage.getItem("token");
 	const admin = localStorage.getItem("AdminEmail");
 	var temp=!import.meta.env.VITE_REACT_APP_VAR1;
@@ -47,9 +60,10 @@ function App() {
         {user && <Route path="/access" element={<Access />} />}
         {user && <Route path="/naccess" element={<Naccess />} />}
 		{user && <Route path="/course" element={<CoursePage />} />}
+		{userDetails ?(<Route path="/mainpage" exact element={<MainPage />} />):( <Route path="/mainpage" exact element={ <LoginForm/>} />) }
 
-			{user && <Route path="/page" exact element={<Main />} />}
-			<Route path="/signup" exact element={<Signup />} />
+		{user && <Route path="/page" exact element={<Main />} />}
+		<Route path="/signup" exact element={<Signup />} />
 			<Route path="/login" exact element={<LoginForm />} />
 			<Route path="/page" element={<Navigate replace to="/login" />} />
 
