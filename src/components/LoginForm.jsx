@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../Styles/Login.css"; 
-
+import SignInwithGoogle from "./SignInwithGoogle";
 const LoginForm = () => {
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -79,6 +79,8 @@ const LoginForm = () => {
           <Link to="/forget-password">
             <button type="button" className="login-signup-button">Reset Password</button>
           </Link>
+          <SignInwithGoogle/>
+
         </div>
       </div>
     </div>

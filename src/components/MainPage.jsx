@@ -18,6 +18,9 @@ import special from "../assets/specialbanner.png";
 import sankalp from "../assets/sankalp.png";
 import DVideo from "../assets/Bridging Silence, Building Connections.mp4"
 import DVideoMobile from "../assets/SpectovM.mp4"; 
+import { auth, db } from "./Firebase";
+import { doc, getDoc } from "firebase/firestore";
+
 
 let careers = [
   {
@@ -86,23 +89,45 @@ let careers = [
   },
 ];
 
-const Main = () => {
-  const [user, setUser] = useState([]);
+const MainPage = () => {
+ // const [user1, setUser1] = useState([]);
   const [videoSrc, setVideoSrc] = useState(DVideo);
-  const email = localStorage.getItem("email");
+  //const email = localStorage.getItem("email");
+  const [userDetails, setUserDetails] = useState(null);
+
+
+  const fetchUserData = async () => {
+    auth.onAuthStateChanged(async (user) => {
+      console.log(user);
+      setUserDetails(user)
+    });
+  };
+  async function handleLogOut() {
+    try {
+      await auth.signOut();
+      window.location.href = "/login";
+      console.log("User logged out successfully!");
+    } catch (error) {
+      console.error("Error logging out:", error.message);
+    }
+  }
 
   useEffect(() => {
+    fetchUserData();
+  }, []);
+
+ /* useEffect(() => {
     const getCodeDetail = async () => {
       try {
         const { data } = await axios.get(`https://spectov-backend.onrender.com/api/details/${email}`);
-        setUser(data);
+        setUser1(data);
         localStorage.setItem('courses', data.courses);
       } catch (error) {
         console.log(error);
       }
     };
     getCodeDetail();
-  }, [email]);
+  }, [email]);*/
 
   useEffect(() => {
     const handleResize = () => {
@@ -121,22 +146,22 @@ const Main = () => {
     };
   }, []);
 
-  const handleLogout = () => {
+ /* const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.reload();
-  };
+  };*/
 
   return (
     <>
-      <div style={{ backgroundColor: 'black' }}>
+      {userDetails?(<div style={{ backgroundColor: 'black' }}>
         <div style={{ display: "flex", justifyContent: "end" }}>
           <div style={{ display: "flex" }}>
-            <h1 className="mt-9 text-white">Hi {user.firstName}</h1>&emsp;
+            <h1 className="mt-9 text-white">Hi {userDetails.displayName}</h1>&emsp;
             <Link to="/details" className="mt-9">
               <button style={{ backgroundColor: "blue", color: "white", height: "2.5rem", borderRadius: "10px" }}>&emsp;Profile&emsp;</button>
             </Link>&emsp;
             <Link to="/login" className="mt-9">
-              <button style={{ backgroundColor: "red", color: "white", height: "2.5rem", borderRadius: "10px" }} onClick={handleLogout}>&emsp;Logout&emsp;</button>
+              <button style={{ backgroundColor: "red", color: "white", height: "2.5rem", borderRadius: "10px" }} onClick={handleLogOut}>&emsp;Logout&emsp;</button>
             </Link>&emsp;
           </div>
         </div>
@@ -161,9 +186,11 @@ const Main = () => {
         </div>
         <Career_hero />
         <Timeline />
-      </div>
+      </div> ) : (
+        <p>Loading...</p>
+      )}
     </>
   );
 };
 
-export default Main;
+export default MainPage;

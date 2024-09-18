@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { auth, db } from "./Firebase.js";
 
 export default function CareerCard(props) {
   const user = localStorage.getItem("token");
@@ -10,7 +11,16 @@ export default function CareerCard(props) {
     const courses = localStorage.getItem("courses");
     initialArray = courses ? courses.split(",") : [];
   }
-
+  const [userDetails, setUserDetails] = useState(null);
+	const fetchUserData = async () => {
+		auth.onAuthStateChanged(async (user) => {
+		  console.log(user);
+		  setUserDetails(user)
+		});
+	  };
+	  useEffect(() => {
+		fetchUserData();
+	  }, []);
   return (
     <>
       <div className="border-stone-600 bg-[#192027] h-84 m-2 flex w-fit flex-col justify-between text-wrap rounded-2xl border-[1px] border-solid p-5 sm:w-72">
@@ -28,9 +38,9 @@ export default function CareerCard(props) {
         </div>
         <Link
           className="mt-2 flex h-16 w-full items-center justify-center rounded-xl bg-blue-600 text-white"
-          to={user ? `/careers/${props.item}` : "/careers"}
+          to={user? `/careers/${props.item}` : "/careers"}
           onClick={() => {
-            user
+            user||userDetails
               ? console.log("login")
               : alert("login first to go to the course");
           }}
